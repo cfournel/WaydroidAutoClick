@@ -1,0 +1,23 @@
+#!/bin/bash
+# used commands
+
+
+## adb shell input tap 150 500
+
+
+while :
+do
+
+    	adb shell input tap 150 500
+	echo "add  health"
+	sleep 10
+	echo "switch to damage"
+	adb shell input tap 50 660
+	sleep 10
+	echo "add Damage"
+	adb shell input tap 150 500
+	sleep 2
+	echo "switch to health"
+	adb shell input tap 150 660
+	sleep 2
+done
