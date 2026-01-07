@@ -10,3 +10,11 @@ GameScript directory holds all game scripts, you can extend this catalog with yo
 For now, only one script for the Tower idle game.
 
 don t hesitate to submit your script for any games !
+
+Launch for the Tower : 
+
+    ### give permission
+    chmod +x WayAC.sh
+
+    ### launch
+    ./WayAC.sh gameScript/the_Tower_farm.wd
