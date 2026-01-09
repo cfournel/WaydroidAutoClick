@@ -15,13 +15,13 @@ install_adb() {
 
     if command -v apt >/dev/null 2>&1; then
         sudo apt update
-        sudo apt install -y android-tools-adb
+        sudo apt install -y android-tools-adb imagemagick
 
     elif command -v dnf >/dev/null 2>&1; then
-        sudo dnf install -y android-tools
+        sudo dnf install -y android-tools imagemagick
 
     elif command -v pacman >/dev/null 2>&1; then
-        sudo pacman -Sy --noconfirm android-tools
+        sudo pacman -Sy --noconfirm android-tools imagemagick
 
     else
         echo "⚠️  can't install ADB"
@@ -30,6 +30,26 @@ install_adb() {
     fi
 }
 
+take_screenshot()
+{
+    adb shell screencap -p /sdcard/screenshot.png
+    adb pull /sdcard/screenshot.png /tmp/screenshot.png
+    adb shell rm /sdcard/screenshot.png
+}
+
+find_image()
+{
+    take_screenshot
+    screen="/tmp/screenshot.png"
+
+    out=$(compare -metric NCC -subimage-search "$screen" "$1" "diff.png" null: 2>&1)
+
+    score=$(echo "$out" | awk '{print $1}')
+    pos=$(echo "$out" | awk -F'@ ' '{print $2}')
+
+    echo "score=$score"
+    echo "pos=$pos"
+}
 
 #### check if waydroid is running ######
 SERVICE="waydroid"
@@ -68,10 +88,24 @@ WIDTH=${SIZE%x*}
 HEIGHT=${SIZE#*x}
 HCENTER=WIDTH/2
 VCENTER=HEIGHT/2
+PAUSE=0
 echo "WIDTH=$WIDTH HEIGHT=$HEIGHT"
 
 
 while :
 do
-	source $GameScript
+	read -t2 -n1 check
+#	if ([ $check != "" ]  && [ PAUSE==0]); then
+#	        echo "Paused"
+#		PAUSE==1
+#        	read -n1
+#	        check=""
+#	fi
+#	if ([ $check != ""] && [PAUSE==1]); then
+#		echo "Resume"
+#		PAUSE=0
+#	fi
+    	if ([ $PAUSE == 0 ]); then
+		source $GameScript
+	fi
 done
